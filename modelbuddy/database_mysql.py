@@ -10,9 +10,13 @@ DB_PASS = "root"
 DB_NAME = "modelBuddy"
 MB_DEBUG = True
 
-db = MySQLdb.connect(host=str(DB_HOST), port=int(DB_PORT), user=str(DB_USER), passwd=str(DB_PASS), db=str(DB_NAME))
-
-cur = db.cursor()
+try:
+    db = MySQLdb.connect(host=str(DB_HOST), port=int(DB_PORT), user=str(DB_USER), passwd=str(DB_PASS), db=str(DB_NAME))
+    cur = db.cursor()
+    if MB_DEBUG == True:
+        print "== database_mysql == Connected to database"
+except Exception, e:
+    exit("== database_mysql == Could not connected to database.\n" + str(e))
 
 """
     Find the table structure for (tableName) and return a tuple
@@ -102,6 +106,7 @@ def select(query,values):
 """
     Create a blank record using default values from the tableStructure and return it back to BaseModel
 """
+
 def assign_defaults(tableStructure):
     record = {}
     for row in tableStructure[0]:
