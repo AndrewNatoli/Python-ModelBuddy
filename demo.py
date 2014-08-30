@@ -4,6 +4,6 @@ import modelbuddy
 
 __author__ = 'andrew'
 
-print "Hello World!"
+modelbuddy.debug("debug message test")
 
-modelbuddy.debug("Biscuit")
+bacon = modelbuddy.get("person", {"person_id":"1"})
