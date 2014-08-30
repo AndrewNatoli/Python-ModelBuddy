@@ -29,6 +29,7 @@ class BaseModel():
         if wc == "" and type(wc) != dict:
             functions.debug("Loaded blank model")
             self.mb_recordData = database.assign_defaults(self.mb_tableStructure)
+            print self.mb_recordData
             return
 
         #Generate our select query

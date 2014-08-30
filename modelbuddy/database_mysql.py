@@ -99,7 +99,16 @@ def select(query,values):
 
     return result[0]
 
+"""
+    Create a blank record using default values from the tableStructure and return it back to BaseModel
+"""
 def assign_defaults(tableStructure):
-    # print str(tableStructure) + " DESU"
-    # exit("good")
-    print "coming soon"
+    record = {}
+    for row in tableStructure[0]:
+        if str(row[4]) == "None":
+            defaultValue = ""
+        else:
+            defaultValue = str(row[4])
+        record[str(row[0])] = defaultValue
+
+    return record
