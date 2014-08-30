@@ -37,5 +37,15 @@ class BaseModel():
 
         functions.debug("Fetching record")
         result = database.select(selectQuery[0],selectQuery[1])
+        functions.debug("Got record.")
 
-        print result
+    #Change values in the model (but does not write them to the database)
+    def set(self,values):
+        for key in values:
+            try:
+                self.mb_recordData[key]
+                self.mb_recordData[key] = values[key]
+                functions.debug("Updated key " + str(key) + " with value " + str(values[key]))
+            except KeyError:
+                functions.debug("Uh oh! Key: " + str(key) + " does not exist in the record!")
+        functions.debug("Record data set. Use save() or commit() to write to database")
