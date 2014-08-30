@@ -1,44 +1,40 @@
-import database
+#If using a different db engine, change this import!
+import database_mysql as database
+
 import functions
+
 
 __author__ = 'andrew'
 
-class BaseModel() :
-    mb_tableName        = ""
-    mb_wc               = ""
-    mb_custom_values    = ""
-    mb_tableStructure   = {}
-    mb_primaryKey       = ""
-    mb_recordData       = {}
+class BaseModel():
+    mb_tableName = ""  # Tuple (table structure, primary key
+    mb_wc = ""
+    mb_custom_values = ""
+    mb_tableStructure = {}
+    mb_primaryKey  = ""
+    mb_recordData = {}
 
-    def __init__(self, tableName, wc, custom_values):
+    # Find a record in the database based on a where clause
+    def __init__(self, tableName, wc="", custom_values=""):
         functions.debug("Initializing ModelBuddy Model for " + tableName + " table.")
         self.mb_tableName = tableName
         self.mb_wc = wc
         self.mb_custom_values = custom_values
 
-        #Build our query...
-        query = "SELECT * FROM " + tableName + " WHERE "
-        for key in wc.keys():
-            query = query + key + '="' + wc[key] + '" AND '
 
-        # Trim off the last "AND"
-        query = query[:-4]
+        #Get Table Structure
+        self.mb_tableStructure = database.getTableStructure(self.mb_tableName)
 
-        #Run the query and see what happens...
-        database.cur.execute(query)
+        #If there's no WC, exit
+        if wc == "" and type(wc) != dict:
+            functions.debug("Loaded blank model")
+            self.mb_recordData = database.assign_defaults(self.mb_tableStructure)
+            return
 
-        result = []
-        columns = tuple( [d[0].decode('utf8') for d in database.cur.description] )
-        for row in database.cur:
-            result.append(dict(zip(columns, row)))
+        #Generate our select query
+        selectQuery = database.generate_selectQuery(self.mb_tableName,self.mb_wc,self.mb_custom_values)
 
-        self.mb_recordData = result[0]
+        functions.debug("Fetching record")
+        result = database.select(selectQuery[0],selectQuery[1])
 
-        print self.mb_recordData["firstname"]
-
-        #Now get the table structure...
-        # self.mb_tableStructure = database.getTablestructure(table)
-
-
-
+        print result

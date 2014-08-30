@@ -6,4 +6,6 @@ __author__ = 'andrew'
 
 modelbuddy.debug("debug message test")
 
-bacon = modelbuddy.get("person", {"person_id":"1"})
+person = modelbuddy.get("person", {"person_id":"1"})
+new_person = modelbuddy.get("person")
+other_person = modelbuddy.get("person","person_id=%s",("1"))
