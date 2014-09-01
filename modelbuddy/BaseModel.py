@@ -37,6 +37,7 @@ class BaseModel():
 
         functions.debug("Fetching record")
         result = database.select(selectQuery[0],selectQuery[1])
+        self.mb_recordData = result
         functions.debug("Got record.")
 
     #Change values in the model (but does not write them to the database)

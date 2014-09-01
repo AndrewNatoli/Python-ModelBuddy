@@ -11,4 +11,6 @@ new_person = modelbuddy.get("person")
 other_person = modelbuddy.get("person","person_id=%s",("1"))
 
 new_person.set({"bacon":"fresh","firstname":"john"})
-new_person.commit();
+
+person.set({"firstname":"John"})
+person.update()

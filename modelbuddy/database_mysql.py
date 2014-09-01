@@ -55,7 +55,7 @@ def getTableStructure(tableName):
 """
 def generate_updateQuery(tableName,newValues,wc,custom_values=""):
     functions.debug("Generating an update query...")
-    #Build our query
+    #Build our update query TODO: Build insert
     query = "UPDATE " + tableName + " SET "
     values = []
     for key in newValues.keys():
@@ -66,18 +66,21 @@ def generate_updateQuery(tableName,newValues,wc,custom_values=""):
     query = query[:-1] + " WHERE "
 
     if type(wc) == dict:
-        functions.debug("Given dictionary WC")
+        functions.debug("Given dictionary WC -- " + str(wc))
         # Add our keys to the statement and then we'll put the values in a tuple
         for key in wc.keys():
             query = query + key + '= %s AND '
             values.append(wc[key])
 
     elif type(wc) == str:
-        functions.debug("Given String WC")
+        functions.debug("Given String WC -- " + str(wc))
         query = query + wc
         functions.debug("custom_values: " + str(custom_values))
         for value in custom_values:
             values.append(value)
+
+    # Trim off the last AND
+    query = query[:-4]
 
     return (query,values)
 
