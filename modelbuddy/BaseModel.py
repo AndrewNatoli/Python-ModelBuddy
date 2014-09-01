@@ -49,3 +49,12 @@ class BaseModel():
             except KeyError:
                 functions.debug("Uh oh! Key: " + str(key) + " does not exist in the record!")
         functions.debug("Record data set. Use save() or commit() to write to database")
+
+    def commit(self):
+        updateQuery = database.generate_updateQuery(self.mb_tableName,self.mb_recordData,self.mb_wc,self.mb_custom_values)
+        #result = database.update(updateQuery[0],updateQuery[1])
+        functions.debug(updateQuery[0])
+        functions.debug(str(updateQuery[1]))
+
+    def update(self):
+        self.commit()

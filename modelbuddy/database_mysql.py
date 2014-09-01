@@ -50,6 +50,38 @@ def getTableStructure(tableName):
     return tableStructure, primaryKey
 
 """
+    Returns a tuple, (query, values)
+    query: "UPDATE table SET.... WHERE...."
+"""
+def generate_updateQuery(tableName,newValues,wc,custom_values=""):
+    functions.debug("Generating an update query...")
+    #Build our query
+    query = "UPDATE " + tableName + " SET "
+    values = []
+    for key in newValues.keys():
+        query = query + key + " =%," #Key goes in the query
+        values.append(newValues[key]) #Value goes in separate list
+
+    # Trim the last comma and then add the where-clause
+    query = query[:-1] + " WHERE "
+
+    if type(wc) == dict:
+        functions.debug("Given dictionary WC")
+        # Add our keys to the statement and then we'll put the values in a tuple
+        for key in wc.keys():
+            query = query + key + '= %s AND '
+            values.append(wc[key])
+
+    elif type(wc) == str:
+        functions.debug("Given String WC")
+        query = query + wc
+        functions.debug("custom_values: " + str(custom_values))
+        for value in custom_values:
+            values.append(value)
+
+    return (query,values)
+
+"""
     Returns a tuple, (query,values)
     query: "SELECT * FROM table WHERE this=%s
     values: Tuple with the values for each key
