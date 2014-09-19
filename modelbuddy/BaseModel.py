@@ -56,6 +56,7 @@ class BaseModel():
         #result = database.update(updateQuery[0],updateQuery[1])
         functions.debug(updateQuery[0])
         functions.debug(str(updateQuery[1]))
+        database.update(updateQuery[0],updateQuery[1])
 
     def update(self):
         self.commit()

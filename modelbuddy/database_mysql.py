@@ -1,5 +1,7 @@
 import MySQLdb
 import functions
+import time
+import datetime
 
 __author__ = 'andrew'
 
@@ -59,22 +61,22 @@ def generate_updateQuery(tableName,newValues,wc,custom_values=""):
     query = "UPDATE " + tableName + " SET "
     values = []
     for key in newValues.keys():
-        query = query + key + " =%," #Key goes in the query
+        query = str(query) + str(key) + " = %s, " #Key goes in the query
         values.append(newValues[key]) #Value goes in separate list
 
     # Trim the last comma and then add the where-clause
-    query = query[:-1] + " WHERE "
+    query = query[:-2] + " WHERE "
 
     if type(wc) == dict:
         functions.debug("Given dictionary WC -- " + str(wc))
         # Add our keys to the statement and then we'll put the values in a tuple
         for key in wc.keys():
-            query = query + key + '= %s AND '
+            query = str(query) + str(key) + '= %s AND '
             values.append(wc[key])
 
     elif type(wc) == str:
         functions.debug("Given String WC -- " + str(wc))
-        query = query + wc
+        query = str(query) + str(wc)
         functions.debug("custom_values: " + str(custom_values))
         for value in custom_values:
             values.append(value)
@@ -126,17 +128,42 @@ def select(query,values):
     try:
         cur.execute(query, values)
 
-        result = []
+        result = {}
         columns = tuple([d[0].decode('utf8') for d in cur.description])
 
         for row in cur:
-            result.append(dict(zip(columns, row)))
+            field = zip(columns, row)
+            print type(field)
+            for column in field:
+                result[column[0]] = str(column[1])
+
+
+
+
+        print str(result)
 
     except Exception, e:
         functions.debug("Error getting record")
         exit("ModelBuddy Database Driver Error: " + str(e) + "\n modelbuddy.database.select("+ str(query) + ", " + str(values)+")")
 
-    return result[0]
+    return result
+
+"""
+    Execute an UPDATE statement
+    Requires a string (query) and a tuple of values that make up what to change and the where clause
+"""
+def update(query, values):
+    # Make sure the values are in a tuple
+    if type(values) != list:
+        values = list(values)
+
+    #Run the query and see what happens...
+    try:
+        cur.executemany(query,values)
+        functions.debug("Updated.")
+    except Exception, e:
+        functions.debug("Error updating record.");
+        exit("ModelBuddy Database Driver Error: " + str(e) + "\n modelbuddy.database.upate("+ str(query) + ", " + str(values)+")")
 
 """
     Create a blank record using default values from the tableStructure and return it back to BaseModel
