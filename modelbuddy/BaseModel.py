@@ -60,3 +60,9 @@ class BaseModel():
 
     def update(self):
         self.commit()
+
+    def insert(self):
+        insertQuery = database.generate_insertQuery(self.mb_tableName,self.mb_recordData)
+        functions.debug(str(insertQuery[0]))
+        functions.debug(str(insertQuery[1]))
+        database.insert(insertQuery[0],insertQuery[1])

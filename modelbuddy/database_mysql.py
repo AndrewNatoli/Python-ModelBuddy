@@ -55,6 +55,31 @@ def getTableStructure(tableName):
     Returns a tuple, (query, values)
     query: "UPDATE table SET.... WHERE...."
 """
+def generate_insertQuery(tableName,newValues):
+    functions.debug("Generating an insert query...")
+    #Build our update query TODO: Build insert
+    query = "INSERT INTO " + tableName + " ("
+    queryValuesPiece = " VALUES ("
+    values = []
+    for key in newValues.keys():
+        query = str(query) + str(key) + "," #Key goes in the first spot
+        queryValuesPiece = str(queryValuesPiece) + "%s,"
+        values.append(str(newValues[key])) #Value goes in separate list
+
+    # Finish the first part with the fields
+    query = query[:-1] + ") "
+    # Finish the second part with the values
+    queryValuesPiece = queryValuesPiece[:-1] + ")"
+
+    # Combine the two
+    query = str(query) + str(queryValuesPiece)
+    return (query,values)
+
+
+"""
+    Returns a tuple, (query, values)
+    query: "UPDATE table SET.... WHERE...."
+"""
 def generate_updateQuery(tableName,newValues,wc,custom_values=""):
     functions.debug("Generating an update query...")
     #Build our update query TODO: Build insert
@@ -137,9 +162,6 @@ def select(query,values):
             for column in field:
                 result[column[0]] = str(column[1])
 
-
-
-
         print str(result)
 
     except Exception, e:
@@ -153,7 +175,7 @@ def select(query,values):
     Requires a string (query) and a tuple of values that make up what to change and the where clause
 """
 def update(query, values):
-    # Make sure the values are in a tuple
+    # Make sure the values are in a list
     if type(values) != list:
         values = list(values)
 
@@ -165,6 +187,25 @@ def update(query, values):
     except Exception, e:
         functions.debug("Error updating record.");
         exit("ModelBuddy Database Driver Error: " + str(e) + "\n modelbuddy.database.upate("+ str(query) + ", " + str(values)+")")
+
+
+"""
+    Execute an INSERT statement
+    Requires a string (query) and a tuple of values
+"""
+def insert(query, values):
+    # Make sure the values are in a list
+    if type(values) != list:
+        values = list(values)
+
+    #Run the query and see what happens...
+    try:
+        cur.executemany(query,[values])
+        db.commit()
+        functions.debug("Inserted.")
+    except Exception, e:
+        functions.debug("Error inserting record.");
+        exit("ModelBuddy Database Driver Error: " + str(e) + "\n modelbuddy.database.insert("+ str(query) + ", " + str(values)+")")
 
 """
     Create a blank record using default values from the tableStructure and return it back to BaseModel
