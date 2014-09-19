@@ -12,6 +12,7 @@ class BaseModel():
     mb_custom_values = ""
     mb_tableStructure = {}
     mb_primaryKey  = ""
+    mb_autoIncrement = False # Whether or not the primary key is an auto_increment field
     mb_recordData = {}
 
     # Find a record in the database based on a where clause
@@ -24,6 +25,7 @@ class BaseModel():
 
         #Get Table Structure
         self.mb_tableStructure = database.getTableStructure(self.mb_tableName)
+        # TODO: Find primary key and determine if it's an auto-increment field. set mb_primaryKey and mb_autoIncrement
 
         #If there's no WC, exit
         if wc == "" and type(wc) != dict:
@@ -44,6 +46,8 @@ class BaseModel():
     def set(self,values):
         for key in values:
             try:
+                # TODO: Don't allow modifying of an auto-increment primary key.
+                # check if it's not a duplicate entry... but at the start it should be read only.
                 self.mb_recordData[key]
                 self.mb_recordData[key] = values[key]
                 functions.debug("Updated key " + str(key) + " with value " + str(values[key]))
@@ -52,16 +56,19 @@ class BaseModel():
         functions.debug("Record data set. Use save() or commit() to write to database")
 
     def commit(self):
+        # TODO: Deprecated. Remove in the future.
+        self.update()
+
+    def update(self):
+        # TODO: Determine if the record already exists by checking if the primary key value is set.
         updateQuery = database.generate_updateQuery(self.mb_tableName,self.mb_recordData,self.mb_wc,self.mb_custom_values)
         #result = database.update(updateQuery[0],updateQuery[1])
         functions.debug(updateQuery[0])
         functions.debug(str(updateQuery[1]))
         database.update(updateQuery[0],updateQuery[1])
 
-    def update(self):
-        self.commit()
-
     def insert(self):
+        # TODO: I'm okay with using this to duplicate a record but we have to unset or change the primary key first...
         insertQuery = database.generate_insertQuery(self.mb_tableName,self.mb_recordData)
         functions.debug(str(insertQuery[0]))
         functions.debug(str(insertQuery[1]))

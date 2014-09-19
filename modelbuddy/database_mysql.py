@@ -57,7 +57,7 @@ def getTableStructure(tableName):
 """
 def generate_insertQuery(tableName,newValues):
     functions.debug("Generating an insert query...")
-    #Build our update query TODO: Build insert
+    #Build our update query
     query = "INSERT INTO " + tableName + " ("
     queryValuesPiece = " VALUES ("
     values = []
@@ -82,7 +82,7 @@ def generate_insertQuery(tableName,newValues):
 """
 def generate_updateQuery(tableName,newValues,wc,custom_values=""):
     functions.debug("Generating an update query...")
-    #Build our update query TODO: Build insert
+    #Build our update query
     query = "UPDATE " + tableName + " SET "
     values = []
     for key in newValues.keys():
@@ -212,6 +212,7 @@ def insert(query, values):
 """
 
 def assign_defaults(tableStructure):
+    # TODO: Default values for datetimes
     record = {}
     for row in tableStructure[0]:
         if str(row[4]) == "None":
