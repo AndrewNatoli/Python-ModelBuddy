@@ -42,6 +42,14 @@ class BaseModel():
         self.mb_recordData = result
         functions.debug("Got record.")
 
+    # Read the value of a column
+    def get(self,key):
+        try:
+            return self.mb_recordData[key]
+        except KeyError:
+            functions.debug("Column \"" + str(key) + "\" not found in " + str(self.mb_tableName) + " table.")
+            return ""
+
     #Change values in the model (but does not write them to the database)
     def set(self,values):
         for key in values:

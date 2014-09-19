@@ -10,6 +10,8 @@ person = modelbuddy.get("person", {"person_id":"1"})
 person.set({"firstname":"John","lastname":"Fredrickson"})
 person.update()
 
+print "The person's first name is: " + str(person.get("firstname"))
+
 
 new_person = modelbuddy.get("person")
 
@@ -20,3 +22,5 @@ new_person.insert()
 # other_person = modelbuddy.get("person","person_id=%s",("1"))
 # other_person.set({"firstname:Joe"})
 # other_person.update()
+
+print "OK Done!"
