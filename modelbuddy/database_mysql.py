@@ -159,7 +159,8 @@ def update(query, values):
 
     #Run the query and see what happens...
     try:
-        cur.executemany(query,values)
+        cur.executemany(query,[values])
+        db.commit()
         functions.debug("Updated.")
     except Exception, e:
         functions.debug("Error updating record.");
